@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SNGPC — Sistema Nacional de Gerenciamento de Produtos Controlados
 
-## Getting Started
+Interface web para autenticação e envio de arquivos XML ao SNGPC (ANVISA).
 
-First, run the development server:
+## Pré-requisitos
+
+- [Docker](https://docs.docker.com/get-docker/) 24+
+- [Docker Compose](https://docs.docker.com/compose/install/) v2+
+
+Verifique as versões instaladas:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker --version
+docker compose version
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Como executar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**1. Clone o repositório**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+git clone <url-do-repositorio>
+cd anvisa-test
+```
 
-## Learn More
+**2. Suba a aplicação**
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker compose up --build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> Na primeira execução o build pode levar alguns minutos. Nas próximas será mais rápido pois as camadas ficam em cache.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**3. Acesse no navegador**
 
-## Deploy on Vercel
+```
+http://localhost:3000
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Rodando em segundo plano
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker compose up --build -d
+```
+
+Para acompanhar os logs:
+
+```bash
+docker compose logs -f
+```
+
+## Parando a aplicação
+
+```bash
+docker compose down
+```
+
+## Funcionalidades
+
+| Tela | Descrição |
+|---|---|
+| `/` | Login com usuário e senha da ANVISA |
+| `/dashboard` | Envio de arquivo XML ao SNGPC |
+| `/dashboard` | Consulta de arquivo XML por e-mail, CNPJ e hash |
+
+## Solução de problemas
+
+**Porta 3000 já em uso**
+
+Edite o `docker-compose.yml` e troque a porta:
+
+```yaml
+ports:
+  - "8080:3000"  # acesse em http://localhost:8080
+```
+
+**Ver logs de erro da API externa**
+
+Os logs das chamadas à API da ANVISA aparecem no terminal do container:
+
+```bash
+docker compose logs -f
+```
+
+**Rebuild completo após mudanças no código**
+
+```bash
+docker compose down
+docker compose up --build
+```
